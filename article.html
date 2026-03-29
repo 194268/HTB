@@ -2,48 +2,60 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <script>
-  // 离开页面时显示提醒，回来恢复
-  const originalTitle = "my article";
-  document.addEventListener("visibilitychange", () => {
-    document.title = document.hidden ? "👀 快看这里！" : originalTitle;
-  });
-</script>
-    <link rel="stylesheet" href="style.css">
+    <title>DECODING_SYSTEM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Fira+Code&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-</head>
-<body class="article-page">
-    <div class="reading-line"></div>
-    
-    <nav class="article-nav">
-        <a href="index.html">← RETURN_TO_DASHBOARD</a>
-        <div id="doc-id">DOC_ID: UNKNOWN</div>
-    </nav>
+    <style>
+        :root { --bg: #000; --text: #eee; --dim: #888; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter'; line-height: 1.8; margin: 0; }
+        
+        /* 进度条 */
+        #progress { position: fixed; top: 0; left: 0; height: 2px; background: #fff; width: 0%; z-index: 2000; transition: width 0.1s; }
+        
+        nav { padding: 30px; border-bottom: 1px solid #222; backdrop-filter: blur(10px); position: sticky; top: 0; background: rgba(0,0,0,0.8); }
+        nav a { color: var(--dim); text-decoration: none; font-size: 12px; font-family: 'Fira Code'; }
+        nav a:hover { color: #fff; }
 
-    <main class="article-content">
-        <div id="content" class="markdown-body">
-            加载中...
-        </div>
+        .content { max-width: 800px; margin: 60px auto; padding: 0 24px; }
+        
+        /* Markdown 样式 */
+        .markdown-body h1 { font-size: 48px; margin-bottom: 40px; letter-spacing: -2px; }
+        .markdown-body h2 { margin-top: 50px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .markdown-body p { font-size: 18px; color: #ccc; margin-bottom: 30px; }
+        .markdown-body code { font-family: 'Fira Code'; background: #1a1a1a; padding: 3px 6px; border-radius: 4px; font-size: 14px; }
+        .markdown-body pre { background: #0a0a0a !important; padding: 25px; border: 1px solid #222; border-radius: 8px; overflow-x: auto; }
+        .markdown-body img { max-width: 100%; border-radius: 8px; border: 1px solid #222; }
+    </style>
+</head>
+<body>
+    <div id="progress"></div>
+    <nav><a href="index.html"><- BACK_TO_TERMINAL</a></nav>
+    <main class="content">
+        <div id="render-content" class="markdown-body">LOADING_DATA...</div>
     </main>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const postName = params.get('post');
         const GITHUB_USER = '194268'; 
         const REPO_NAME = 'SYC';
+        const urlParams = new URLSearchParams(window.location.search);
+        const postName = urlParams.get('post');
 
         if (postName) {
-            document.getElementById('doc-id').innerText = `DOC_ID: ${postName.toUpperCase()}`;
-            
             fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${REPO_NAME}/main/posts/${postName}`)
                 .then(res => res.text())
-                .then(text => {
-                    document.getElementById('content').innerHTML = marked.parse(text);
-                    hljs.highlightAll(); // 代码高亮
+                .then(md => {
+                    document.getElementById('render-content').innerHTML = marked.parse(md);
+                    hljs.highlightAll();
                 });
         }
+
+        window.onscroll = () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById("progress").style.width = (winScroll / height) * 100 + "%";
+        };
     </script>
 </body>
 </html>
