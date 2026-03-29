@@ -10,23 +10,14 @@
     <style>
         :root { --bg: #000; --text: #eee; --dim: #888; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter'; line-height: 1.8; margin: 0; }
-        
-        /* 进度条 */
         #progress { position: fixed; top: 0; left: 0; height: 2px; background: #fff; width: 0%; z-index: 2000; transition: width 0.1s; }
-        
-        nav { padding: 30px; border-bottom: 1px solid #222; backdrop-filter: blur(10px); position: sticky; top: 0; background: rgba(0,0,0,0.8); }
+        nav { padding: 30px; border-bottom: 1px solid #222; backdrop-filter: blur(10px); position: sticky; top: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
         nav a { color: var(--dim); text-decoration: none; font-size: 12px; font-family: 'Fira Code'; }
         nav a:hover { color: #fff; }
-
         .content { max-width: 800px; margin: 60px auto; padding: 0 24px; }
-        
-        /* Markdown 样式 */
-        .markdown-body h1 { font-size: 48px; margin-bottom: 40px; letter-spacing: -2px; }
-        .markdown-body h2 { margin-top: 50px; border-bottom: 1px solid #222; padding-bottom: 10px; }
-        .markdown-body p { font-size: 18px; color: #ccc; margin-bottom: 30px; }
-        .markdown-body code { font-family: 'Fira Code'; background: #1a1a1a; padding: 3px 6px; border-radius: 4px; font-size: 14px; }
+        .markdown-body h1 { font-size: 42px; margin-bottom: 30px; letter-spacing: -2px; }
         .markdown-body pre { background: #0a0a0a !important; padding: 25px; border: 1px solid #222; border-radius: 8px; overflow-x: auto; }
-        .markdown-body img { max-width: 100%; border-radius: 8px; border: 1px solid #222; }
+        .markdown-body code { font-family: 'Fira Code'; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -35,13 +26,10 @@
     <main class="content">
         <div id="render-content" class="markdown-body">LOADING_DATA...</div>
     </main>
-
     <script>
-        const GITHUB_USER = '194268'; 
-        const REPO_NAME = 'SYC';
+        const GITHUB_USER = '194268'; const REPO_NAME = 'SYC';
         const urlParams = new URLSearchParams(window.location.search);
         const postName = urlParams.get('post');
-
         if (postName) {
             fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${REPO_NAME}/main/posts/${postName}`)
                 .then(res => res.text())
@@ -50,9 +38,8 @@
                     hljs.highlightAll();
                 });
         }
-
         window.onscroll = () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const winScroll = document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             document.getElementById("progress").style.width = (winScroll / height) * 100 + "%";
         };
