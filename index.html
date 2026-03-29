@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FUTURE_TECH // LAB - 未来感技术博客</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <canvas id="mouse-trail"></canvas>
+
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo">FUTURE_TECH <span class="dim">// LAB</span></div>
+            <nav class="nav-links">
+                <a href="#" class="active">HOME</a>
+                <a href="#">ARTICLES</a>
+                <a href="#">TOPICS</a>
+                <a href="#">ABOUT</a>
+            </nav>
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+        </div>
+    </header>
+
+    <main class="container main-layout">
+        
+        <section class="content-area">
+            <div class="hero-carousel">
+                <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1200&auto=format&fit=crop" alt="AI Feature" class="carousel-img">
+                <div class="carousel-overlay">
+                    <span class="tag">FEATURED</span>
+                    <h1>AI & QUANTUM COMPUTING:<br>The Next Frontier</h1>
+                    <button class="btn-primary">READ MORE</button>
+                </div>
+                <div class="carousel-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+
+            <div class="section-title-wrapper">
+                <h2 class="section-title">LATEST ARTICLES</h2>
+                <a href="#" class="read-more-link">VIEW MORE →</a>
+            </div>
+
+            <div class="post-grid">
+                <article class="post-card hover-glow">
+                    <div class="card-inner">
+                        <span class="card-date">January 27, 2024</span>
+                        <h3 class="card-title">Decentralized Intelligence: The Rise of Edge AI</h3>
+                        <p class="card-excerpt">Exploring how edge computing is transforming AI inference, moving technology closer to data sources for faster, more secure processing.</p>
+                        <div class="card-footer">
+                            <span class="card-tag">#EDGE_AI</span>
+                            <span class="card-views">1.2k Views</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="post-card hover-glow">
+                    <div class="card-inner">
+                        <span class="card-date">January 25, 2024</span>
+                        <h3 class="card-title">Post-Quantum Cryptography Standardized</h3>
+                        <p class="card-excerpt">NIST has finalized the first set of encryption standards designed to withstand the threat of future quantum computers.</p>
+                        <div class="card-footer">
+                            <span class="card-tag">#SECURITY</span>
+                            <span class="card-views">982 Views</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="post-card hover-glow">
+                    <div class="card-inner">
+                        <span class="card-date">January 22, 2024</span>
+                        <h3 class="card-title">The Rust Programming Language in Web3</h3>
+                        <p class="card-excerpt">Why Rust is becoming the preferred language for building high-performance, secure blockchain protocols and smart contracts.</p>
+                        <div class="card-footer">
+                            <span class="card-tag">#RUST</span>
+                            <span class="card-views">1.5k Views</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="post-card hover-glow">
+                    <div class="card-inner">
+                        <span class="card-date">January 20, 2024</span>
+                        <h3 class="card-title">Zero-Knowledge Proofs: Privacy for the Masses</h3>
+                        <p class="card-excerpt">Understanding the math and technology that allows proving knowledge without revealing the information itself.</p>
+                        <div class="card-footer">
+                            <span class="card-tag">#ZKPROOFS</span>
+                            <span class="card-views">2.1k Views</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <aside class="sidebar">
+            <div class="widget">
+                <h3 class="widget-title">TOP TAGS</h3>
+                <div class="tag-cloud">
+                    <a href="#" class="tag-item">RUST</a>
+                    <a href="#" class="tag-item">MACHINE LEARNING</a>
+                    <a href="#" class="tag-item">WEB3</a>
+                    <a href="#" class="tag-item">QUANTUM</a>
+                    <a href="#" class="tag-item">AI_ETHICS</a>
+                </div>
+            </div>
+
+            <div class="widget">
+                <h3 class="widget-title">LATEST POSTS</h3>
+                <ul class="mini-post-list">
+                    <li><a href="#">Neuralink Progress Update</a></li>
+                    <li><a href="#">The Future of RISC-V</a></li>
+                    <li><a href="#">Solid-State Battery Tech</a></li>
+                </ul>
+            </div>
+
+            <div class="widget author-widget hover-glow">
+                <div class="author-avatar">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150&auto=format&fit=crop" alt="Author">
+                </div>
+                <h4 class="author-name">Alex Rivera</h4>
+                <p class="author-bio">Tech Explorer. AI Researcher. Futurist.</p>
+                <div class="author-social">
+                    <a href="#">TW</a> <a href="#">GH</a> <a href="#">LN</a>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-container">
+            <p class="copyright">Copyright © 2024 FT LAB. All rights reserved.</p>
+            <div class="footer-links">
+                <span>Status: <span class="status-ok">OPERATIONAL</span></span>
+                <a href="#">hi@ftlab.io</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
