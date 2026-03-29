@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>DOC // READING</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+</head>
+<body class="article-page">
+    <div class="reading-line"></div>
+    
+    <nav class="article-nav">
+        <a href="index.html">← RETURN_TO_DASHBOARD</a>
+        <div id="doc-id">DOC_ID: UNKNOWN</div>
+    </nav>
+
+    <main class="article-content">
+        <div id="content" class="markdown-body">
+            加载中...
+        </div>
+    </main>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const postName = params.get('post');
+        const GITHUB_USER = '你的用户名'; 
+        const REPO_NAME = '你的仓库名';
+
+        if (postName) {
+            document.getElementById('doc-id').innerText = `DOC_ID: ${postName.toUpperCase()}`;
+            
+            fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${REPO_NAME}/main/posts/${postName}`)
+                .then(res => res.text())
+                .then(text => {
+                    document.getElementById('content').innerHTML = marked.parse(text);
+                    hljs.highlightAll(); // 代码高亮
+                });
+        }
+    </script>
+</body>
+</html>
