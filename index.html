@@ -90,18 +90,52 @@
     </main>
 
     <script>
-  let text = "未来至上";
+  // 配置你想要的文字 + 图案
+  const fullText = "▌未来至上▌";
   let index = 0;
-  let title = "";
+  let currentTitle = "";
+  let isDeleting = false;
 
-  function typeWriter() {
-    if (index < text.length) {
-      title += text.charAt(index);
-      document.title = title;
-      index++;
-      setTimeout(typeWriter, 150);
+
+  function dynamicTitle() {
+    // 核心打字逻辑
+    const i = index % fullText.length;
+    
+    if (!isDeleting) {
+      // 打字中
+      currentTitle = fullText.substring(0, i + 1);
+    } else {
+      // 删字中
+      currentTitle = fullText.substring(0, i - 1);
     }
+
+
+    // 设置到网页标题
+    document.title = currentTitle;
+
+
+    // 控制打字/删字速度
+    let speed = isDeleting ? 80 : 120;
+
+
+    // 完整打完后停顿，再开始删除
+    if (!isDeleting && i === fullText.length - 1) {
+      speed = 1200; // 停顿时间
+      isDeleting = true;
+    }
+    // 删完后重新开始
+    else if (isDeleting && i === 0) {
+      isDeleting = false;
+    }
+
+
+    index++;
+    setTimeout(dynamicTitle, speed);
   }
+
+
+  // 启动
+  dynamicTitle();
   typeWriter();
         // 1. GitHub API 自动化逻辑
         const GITHUB_USER = '194268'; 
