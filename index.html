@@ -9,13 +9,14 @@
 <body>
     <canvas id="hero-canvas"></canvas>
     
+    <button class="theme-toggle" onclick="toggleTheme()">MODE</button>
+    
     <nav class="glass-nav" id="main-nav">
         <div class="nav-inner">
-            <span class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">CYBER_LOGIC</span>
+            <span class="logo" onclick="window.scrollTo({top:0, behavior:'smooth'})">TERMINAL // SYC</span>
             <div class="links">
                 <a href="#article-list">ARTICLES</a>
                 <a href="https://github.com/194268/SYC" target="_blank">GITHUB</a>
-                <a href="javascript:void(0)" onclick="toggleTheme()" id="theme-toggle-link" style="margin-left: 30px; border: 1px solid var(--border-dim); padding: 4px 8px;">MODE</a>
             </div>
         </div>
     </nav>
@@ -27,13 +28,8 @@
         </header>
 
         <div id="article-list" class="post-grid">
-            <div class="loading">SYSTEM.INITIALIZING_ACCESS_PROTOCOL...</div>
-        </div>
+            </div>
     </main>
-
-    <footer style="text-align: center; padding: 40px; font-family: 'Fira Code'; font-size: 10px; opacity: 0.4;">
-        <p>TERMINAL_SESSION: ACTIVE // © 2026 SHEN_YUCHAO</p>
-    </footer>
 
     <script src="script.js"></script>
 </body>
