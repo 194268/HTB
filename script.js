@@ -19,32 +19,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 3. GitHub 文章抓取
-    async function fetchPosts() {
-        const GITHUB_USER = '194268', REPO_NAME = 'SYC';
-        const container = document.getElementById('article-list');
-        try {
-            const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/posts`);
-            const files = await res.json();
-            container.innerHTML = '';
-            files.filter(f => f.name.endsWith('.md')).forEach((file, i) => {
-                const title = file.name.replace('.md', '').replace(/-/g, ' ').toUpperCase();
-                const card = document.createElement('a');
-                card.className = 'post-card';
-                card.href = `article.html?post=${file.name}`;
-                card.style.animationDelay = `${i * 0.1}s`;
-                card.innerHTML = `
-                    <div class="card-tag">// NODE_0${i+1}</div>
-                    <h2>${title}</h2>
-                    <div class="line-divider"></div>
-                    <div class="enter-link-btn">DECODE_DOCUMENT -></div>
-                `;
-                container.appendChild(card);
-            });
-        } catch (e) {
-            container.innerHTML = '<div class="loading">ERROR: ACCESS_DENIED</div>';
+async function fetchPosts() {
+    const GITHUB_USER = '194268', REPO_NAME = 'SYC';
+    const container = document.getElementById('article-list');
+
+    try {
+        const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/posts`);
+        
+        // 专门处理 403 频率限制错误
+        if (res.status === 403) {
+            container.innerHTML = `
+                <div class="loading" style="grid-column: 1/-1;">
+                    <span style="color: #ff4d4d;">[!] ACCESS_DENIED: RATE_LIMIT_EXCEEDED</span><br>
+                    <small style="font-size: 10px; opacity: 0.6; margin-top: 10px; display: block;">
+                        GitHub API 访问受限，请稍后再试或切换网络。
+                    </small>
+                </div>`;
+            return;
         }
+
+        const files = await res.json();
+        if (!Array.isArray(files)) throw new Error("INVALID_DATA");
+
+        container.innerHTML = '';
+        files.filter(f => f.name.endsWith('.md')).forEach((file, i) => {
+            const title = file.name.replace('.md', '').replace(/-/g, ' ').toUpperCase();
+            const card = document.createElement('a');
+            card.className = 'post-card';
+            card.href = `article.html?post=${file.name}`;
+            card.style.animationDelay = `${i * 0.1}s`;
+            card.innerHTML = `
+                <div class="card-tag">// NODE_0${i+1}</div>
+                <h2>${title}</h2>
+                <div class="line-divider"></div>
+                <div class="enter-link-btn">DECODE_DOCUMENT -></div>
+            `;
+            container.appendChild(card);
+        });
+    } catch (e) {
+        container.innerHTML = `<div class="loading">ERROR: ${e.message}</div>`;
     }
-    fetchPosts();
+}
+fetchPosts();
 
     // 4. Canvas 流体背景与鼠标流星
     const canvas = document.getElementById('hero-canvas');
