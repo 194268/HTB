@@ -28,9 +28,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 2. 导航栏滚动检测 ---
     window.addEventListener('scroll', () => {
-        const nav = document.getElementById('main-nav');
-        if(nav) nav.classList.toggle('scrolled', window.scrollY > 50);
-    });
+    const nav = document.getElementById('main-nav');
+    if (nav) {
+        // 降低阈值到 20px，让反馈更即时
+        if (window.scrollY > 20) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
+        }
+    }
+});
 
     // --- 3. 全自动化文章抓取 ---
     async function fetchPosts() {
