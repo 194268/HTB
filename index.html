@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark"> <head>
+<html lang="zh-CN" data-theme="dark">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>未来至上 // TERMINAL</title>
@@ -9,7 +10,7 @@
 <body>
     <canvas id="hero-canvas"></canvas>
     
-    <button class="theme-toggle" onclick="toggleTheme()">MODE</button>
+    <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()">MODE</button>
     
     <nav class="glass-nav" id="main-nav">
         <div class="nav-inner">
@@ -28,7 +29,8 @@
         </header>
 
         <div id="article-list" class="post-grid">
-            </div>
+            <div class="loading">SYSTEM.INITIALIZING_ACCESS_PROTOCOL...</div>
+        </div>
     </main>
 
     <script src="script.js"></script>
