@@ -1,87 +1,270 @@
-/* --- 变量定义 --- */
+/* --- 1. 变量同步：与 article 一致 (保持原样，确保 RGB 变量存在) --- */
 :root[data-theme="dark"] {
-    --bg-1: #050505; --bg-1-rgb: 5, 5, 5;
-    --text-main: #ffffff; --text-dim: rgba(255, 255, 255, 0.5);
-    --accent: #ffffff; --accent-rgb: 255, 255, 255;
+    --bg-1: #050505; --bg-2: #0a0c1a; --bg-3: #120d1a;
+    --bg-1-rgb: 5, 5, 5; /* 必须定义这个，用于导航栏半透明 */
+    --text-main: #ffffff;
+    --text-dim: rgba(255, 255, 255, 0.5);
+    --accent: #ffffff;
+    --accent-rgb: 255, 255, 255; /* 用于激光线 */
     --card-bg: rgba(255, 255, 255, 0.03);
     --border-dim: rgba(255, 255, 255, 0.12);
 }
+
 :root[data-theme="light"] {
-    --bg-1: #fdfdfd; --bg-1-rgb: 253, 253, 253;
-    --text-main: #000000; --text-dim: rgba(0, 0, 0, 0.5);
-    --accent: #000000; --accent-rgb: 0, 0, 0;
+    --bg-1: #fdfdfd; --bg-2: #f0f4ff; --bg-3: #f9f0ff;
+    --bg-1-rgb: 253, 253, 253;
+    --text-main: #000000;
+    --text-dim: rgba(0, 0, 0, 0.5);
+    --accent: #000000;
+    --accent-rgb: 0, 0, 0;
     --card-bg: rgba(0, 0, 0, 0.02);
     --border-dim: rgba(0, 0, 0, 0.1);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.6s, color 0.4s; }
-body { background: var(--bg-1); color: var(--text-main); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+body {
+    background: var(--bg-1);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+}
+
 #hero-canvas { position: fixed; top: 0; left: 0; z-index: -1; }
 
-/* --- 导航栏 & 激光线 --- */
+/* --- 2. 导航栏：机械感与对比度增强 (保持原有的激光线和 Scrolled 逻辑) --- */
+
 .glass-nav {
-    position: fixed; top: 0; width: 100%; height: 80px; z-index: 1000;
-    display: flex; align-items: center; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    background: transparent; border-bottom: 1px solid rgba(var(--accent-rgb), 0.08);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 80px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    background: transparent;
+    /* 基础分割线：极淡的半透明线 */
+    border-bottom: 1px solid rgba(var(--accent-rgb), 0.08);
 }
+
+/* 导航栏滚动后的状态 */
 .glass-nav.scrolled {
-    height: 60px; background: rgba(var(--bg-1-rgb), 0.85);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    height: 60px;
+    background: rgba(var(--bg-1-rgb), 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    /* 滚动后边框加深，确保完全切开背景 */
     border-bottom: 1px solid rgba(var(--accent-rgb), 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
+
+/* 激光扫描特效线：在滚动后激活并在底部流动 */
 .glass-nav::after {
-    content: ""; position: absolute; bottom: -1px; left: 0; width: 100%; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    background-size: 200% 100%; animation: laserScan 4s linear infinite; opacity: 0; transition: 0.5s;
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--accent) 50%, 
+        transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: laserScan 4s linear infinite;
+    opacity: 0; /* 默认隐藏 */
+    transition: opacity 0.5s;
 }
-.glass-nav.scrolled::after { opacity: 0.6; }
-@keyframes laserScan { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-.nav-inner { width: 90%; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-.logo { font-family: 'Fira Code'; font-weight: 700; cursor: pointer; letter-spacing: 1px; }
-.links a { text-decoration: none; color: var(--text-dim); font-family: 'Fira Code'; font-size: 12px; margin-left: 30px; }
+.glass-nav.scrolled::after {
+    opacity: 0.6; /* 滚动后显示流动的激光线 */
+}
 
-/* --- 悬浮搜索按钮 (呼吸灯) --- */
+@keyframes laserScan {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* 侧边机械感角标 */
+.nav-inner {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.nav-inner::before {
+    content: "SYS_LINK_READY";
+    position: absolute;
+    left: -40px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    font-family: 'Fira Code';
+    font-size: 8px;
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: all 0.5s;
+    color: var(--accent);
+}
+
+.glass-nav.scrolled .nav-inner::before {
+    opacity: 0.4;
+    left: -25px; /* 滚动后滑入 */
+}
+
+.logo { 
+    font-family: 'Fira Code'; 
+    font-weight: 700; 
+    cursor: pointer; 
+    letter-spacing: 1px; 
+    position: relative;
+}
+
+/* Logo 下方的动态装饰线 */
+.logo::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 12px;
+    height: 2px;
+    background: var(--accent);
+    transition: width 0.4s;
+}
+
+.glass-nav.scrolled .logo::after {
+    width: 100%;
+}
+
+.links a { 
+    text-decoration: none; 
+    color: var(--text-dim); 
+    font-family: 'Fira Code'; 
+    font-size: 12px; 
+    margin-left: 30px; 
+    transition: color 0.3s;
+}
+.links a:hover { color: var(--text-main); }
+
+/* --- 【新增】3. 悬浮搜索按钮 (带呼吸灯效果) --- */
 .search-trigger {
-    position: fixed; right: 30px; bottom: 100px; z-index: 999;
-    background: rgba(var(--bg-1-rgb), 0.6); border: 1px solid var(--border-dim);
-    padding: 12px 24px; display: flex; align-items: center; cursor: pointer;
-    backdrop-filter: blur(10px); animation: triggerPulse 2s ease-in-out infinite;
+    position: fixed;
+    right: 30px;
+    bottom: 110px; /* 避开切换模式的按钮 (mode 按钮通常在 30px) */
+    background: rgba(var(--bg-1-rgb), 0.6); /* 半透明 */
+    border: 1px solid var(--border-dim);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    z-index: 999;
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    /* 挂载呼吸灯动画 */
+    animation: triggerPulse 1.8s ease-in-out infinite;
 }
-.search-trigger:hover {
-    animation: none; background: var(--text-main); color: var(--bg-1);
-    transform: translateX(-5px);
-}
-@keyframes triggerPulse {
-    0%, 100% { border-color: rgba(var(--accent-rgb), 0.2); box-shadow: 0 0 0 rgba(var(--accent-rgb), 0); }
-    50% { border-color: rgba(var(--accent-rgb), 0.8); box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.3); }
-}
-.cmd-icon { font-family: 'Fira Code'; margin-right: 10px; color: var(--accent); }
-.search-trigger:hover .cmd-icon { color: var(--bg-1); }
 
-/* --- 全屏搜索层 --- */
+/* 悬浮时的状态：停止动画，变为实体感 */
+.search-trigger:hover {
+    animation: none; /* 悬浮时停止呼吸 */
+    background: var(--text-main);
+    color: var(--bg-1);
+    border-color: var(--text-main);
+    transform: translateX(-5px) scale(1.02); /* 稍微左移并放大 */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); /* 增加实体阴影 */
+}
+
+/* 呼吸灯动画定义 */
+@keyframes triggerPulse {
+    0%, 100% { border-color: rgba(var(--accent-rgb), 0.2); box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0); }
+    50% { border-color: rgba(var(--accent-rgb), 0.8); box-shadow: 0 0 20px 2px rgba(var(--accent-rgb), 0.3); }
+}
+
+.cmd-icon { font-family: 'Fira Code'; font-weight: bold; margin-right: 12px; color: var(--accent); transition: color 0.3s; }
+.search-trigger:hover .cmd-icon { color: var(--bg-1); }
+.cmd-text { font-family: 'Fira Code'; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; }
+
+/* --- 【新增】4. 全屏搜索遮罩层 (终端特工风格) --- */
 .search-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(var(--bg-1-rgb), 0.98); z-index: 2000;
-    display: none; padding: 8% 5%; overflow-y: auto;
+    background: rgba(var(--bg-1-rgb), 0.98); /* 极高不透明度 */
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    z-index: 2000; display: none; /* 初始隐藏 */
+    padding: 8% 5%; overflow-y: auto;
 }
-.search-overlay.active { display: block; }
-.search-header { display: flex; align-items: center; border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 40px; }
-#search-input { flex: 1; background: transparent; border: none; color: var(--text-main); font-family: 'Fira Code'; font-size: 24px; outline: none; }
+.search-overlay.active { display: block; animation: fadeInSearch 0.3s ease; }
 
-/* --- 文章卡片 --- */
+.search-content { max-width: 1200px; margin: 0 auto; }
+.search-header { display: flex; align-items: center; border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 50px; }
+.terminal-prompt { font-family: 'Fira Code'; color: var(--accent); margin-right: 15px; }
+
+#search-input {
+    flex: 1; background: transparent; border: none;
+    color: var(--text-main); font-family: 'Fira Code'; font-size: 24px;
+    outline: none; caret-color: var(--accent);
+}
+
+.close-search { font-family: 'Fira Code'; font-size: 12px; cursor: pointer; opacity: 0.5; transition: opacity 0.3s; }
+.close-search:hover { opacity: 1; color: #ff4444; }
+
+@keyframes fadeInSearch { from { opacity: 0; } to { opacity: 1; } }
+
+/* --- 5. Post Card：放大 + 变色特效 (保持原样) --- */
 .container { max-width: 1200px; margin: 120px auto; padding: 0 5%; }
 .post-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
-.post-card {
-    background: var(--card-bg); border: 1px solid var(--border-dim); padding: 40px;
-    text-decoration: none; color: inherit; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.post-card:hover { transform: translateY(-10px) scale(1.02); background: var(--text-main); color: var(--bg-1); }
-.line-divider { height: 1px; width: 30px; background: var(--text-dim); margin: 20px 0; }
-.post-card:hover .line-divider { background: var(--bg-1); width: 60px; }
 
+.post-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-dim);
+    padding: 40px;
+    text-decoration: none; color: inherit;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    display: block; position: relative;
+}
+
+/* 核心：Hover 时放大、变色 */
+.post-card:hover {
+    transform: translateY(-10px) scale(1.03); /* 放大 */
+    background: var(--text-main);           /* 背景变为主色 */
+    color: var(--bg-1);                     /* 文字变为背景色 */
+    border-color: var(--text-main);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+}
+
+.card-tag { font-family: 'Fira Code'; font-size: 10px; opacity: 0.5; margin-bottom: 20px; }
+.post-card h2 { font-size: 24px; font-weight: 700; margin: 15px 0; line-height: 1.2; }
+
+.line-divider { 
+    height: 1px; width: 30px; background: var(--text-dim); 
+    margin: 20px 0; transition: width 0.5s; 
+}
+.post-card:hover .line-divider { width: 60px; background: var(--bg-1); }
+
+/* --- 6. 模式切换按钮 (保持原样) --- */
 .theme-toggle {
     position: fixed; bottom: 30px; right: 30px; width: 48px; height: 48px; border-radius: 50%;
     background: var(--text-main); color: var(--bg-1); border: none; cursor: pointer; z-index: 2000;
-    font-family: 'Fira Code'; font-size: 10px; font-weight: bold;
+    display: flex; align-items: center; justify-content: center; font-family: 'Fira Code'; font-size: 10px; font-weight: bold;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: transform 0.3s;
+}
+.theme-toggle:active { transform: scale(0.9); }
+
+/* 英雄区标题 (保持原样，Glitcth 视觉效果在这) */
+.hero-section { margin-bottom: 80px; }
+.glitch-text { font-size: 72px; font-weight: 700; letter-spacing: -5px; }
+.subtitle { font-family: 'Fira Code'; opacity: 0.5; margin-top: 10px; }
+
+/* 适配移动端 (无损合并) */
+@media (max-width: 768px) {
+    .container { margin-top: 100px; padding: 0 20px; }
+    .glitch-text { font-size: 48px; letter-spacing: -2px; }
+    .post-grid { grid-template-columns: 1fr; }
+    
+    .search-trigger { right: 20px; bottom: 100px; padding: 10px 18px; animation-duration: 2s; }
+    #search-input { font-size: 18px; }
 }
