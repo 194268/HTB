@@ -13,7 +13,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
 
     <style>
-        /* [保持你原有的 CSS 逻辑不变] */
         :root[data-theme="dark"] {
             --bg-1: #050505; --bg-2: #0a0c1a; --bg-3: #120d1a;
             --text-main: #ffffff; --text-dim: rgba(255, 255, 255, 0.5);
@@ -45,7 +44,7 @@
         nav { padding: 25px 40px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; }
         nav a { color: var(--text-dim); text-decoration: none; font-size: 11px; font-family: 'Fira Code'; letter-spacing: 1px; }
         nav a:hover { color: var(--text-main); }
-        .content-wrapper { max-width: 900px; margin: 40px auto; padding: 40px 24px; }
+        .content-wrapper { max-width: 900px; margin: 40px auto; padding: 40px 24px; min-height: 80vh; }
         .article-header { margin-bottom: 70px; }
         .article-header h1 { font-size: clamp(32px, 7vw, 64px); font-weight: 700; color: var(--text-main); letter-spacing: -4px; line-height: 1; text-transform: uppercase; }
         .markdown-body img { max-width: 100%; height: auto; border-radius: 12px; margin: 30px 0; display: block; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
@@ -72,12 +71,12 @@
             <h1 id="article-title">LOADING...</h1>
         </header>
         <article id="render-content" class="markdown-body">
-            <div style="color: var(--text-dim); font-family: 'Fira Code';">ESTABLISHING_DATA_LINK...</div>
+            <div id="status-msg" style="color: var(--text-dim); font-family: 'Fira Code';">ESTABLISHING_DATA_LINK...</div>
         </article>
     </main>
 
     <script>
-        // --- 1. 动态 Title 逻辑 (保持原样) ---
+        // --- 1. 动态 Title 逻辑 ---
         let baseTitle = "DECODING";
         let titleIdx = 0, isDel = false;
         function animateTitle() {
@@ -101,17 +100,27 @@
         }
         document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
 
-        // --- 【核心修改】3. 智能解析路径加载内容 ---
+        // --- 【核心修改】3. 增强版路径解析逻辑 ---
         function getPostName() {
             const urlParams = new URLSearchParams(window.location.search);
             let post = urlParams.get('post');
 
-            // 关键：如果参数里没有 post，则从 pathname 解析 (例如 /posts/hello)
-            if (!post && window.location.pathname.startsWith('/posts/')) {
-                const parts = window.location.pathname.split('/');
-                post = parts[parts.length - 1] + '.md';
+            // 逻辑：如果 URL 参数里没拿到，就从当前的访问路径里提取
+            if (!post) {
+                const path = window.location.pathname;
+                // 同时匹配 /p/xxx 或 /posts/xxx
+                const match = path.match(/\/(p|posts)\/(.+)$/);
+                if (match && match[2]) {
+                    // 使用 decodeURIComponent 处理 URL 编码（如 %20 空格）
+                    post = decodeURIComponent(match[2]);
+                }
             }
-            return post;
+            
+            // 补全后缀，并确保不会出现 .md.md
+            if (post) {
+                return post.endsWith('.md') ? post : post + '.md';
+            }
+            return null;
         }
 
         const postName = getPostName();
@@ -121,22 +130,38 @@
             baseTitle = `<< ${cleanTitle} >>`;
             animateTitle();
 
-            // 保持从 GitHub 抓取数据
-            fetch(`https://raw.githubusercontent.com/194268/SYC/main/posts/${postName}`)
+            const fetchUrl = `https://raw.githubusercontent.com/194268/SYC/main/posts/${postName}`;
+            console.log("SYSTEM_LOG: FETCHING ->", fetchUrl);
+
+            fetch(fetchUrl)
                 .then(res => {
-                    if(!res.ok) throw new Error("DATA_LINK_BROKEN");
+                    if(!res.ok) throw new Error(`HTTP_ERR_${res.status}`);
                     return res.text();
                 })
                 .then(md => {
+                    // 渲染 Markdown
                     document.getElementById('render-content').innerHTML = marked.parse(md);
-                    hljs.highlightAll();
+                    // 刷新代码高亮
+                    document.querySelectorAll('pre code').forEach((el) => {
+                        hljs.highlightElement(el);
+                    });
+                    document.getElementById('reading-id').innerText = `SYSTEM: ${postName.toUpperCase()}`;
                 })
                 .catch(err => {
-                    document.getElementById('render-content').innerHTML = `<div style="color:red; font-family:'Fira Code';">[ERROR]: ${err.message}</div>`;
+                    console.error("DATA_LINK_ERROR:", err);
+                    document.getElementById('render-content').innerHTML = `
+                        <div style="color:#ff4d4d; font-family:'Fira Code'; border: 1px solid #ff4d4d; padding: 20px;">
+                            [FATAL_ERROR]: DATA_RETRIVAL_FAILED <br>
+                            [REASON]: ${err.message} <br>
+                            [TARGET]: ${postName}
+                        </div>`;
                 });
+        } else {
+            document.getElementById('article-title').innerText = "404 NOT FOUND";
+            document.getElementById('render-content').innerHTML = "[ERROR]: NO_TARGET_SPECIFIED";
         }
 
-        // --- 4. 动态背景 (保持你原有的 Canvas 逻辑) ---
+        // --- 4. 动态背景 (保持原有的 Canvas 逻辑) ---
         const canvas = document.getElementById('article-canvas');
         const ctx = canvas.getContext('2d');
         let fluidNodes = [], trailParticles = [];
