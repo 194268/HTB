@@ -21,6 +21,10 @@ hum…
 
 wired
 
+we found the position of the flag
+
+COPY challenge/flag.txt /app/flag.txt
+
 with a little search 
 
 we found cve-2025–55182 by using this test payload
